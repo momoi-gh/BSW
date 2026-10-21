@@ -13,11 +13,11 @@
 | --- | --- |
 | 名称 | `bsw-web`（暂定，Web 聊天前端） |
 | 目录 | `/home/momo/Projects/shcool/BSW` |
-| 当前进度 | **W0 已完成**：React 19 + Tailwind 4 + shadcn/ui；联调 3100；Podman 容器一键部署；W3/W6/W8 确认门 |
-| git | ❌ 未初始化（`BSW` 不是 git 仓库；W1 执行 `git init`） |
+| 当前进度 | **W1–W3 已完成，停在 W3 确认门**（骨架 / 认证 / API 客户端 + 单飞刷新） |
+| git | `main` 分支，remote `git@github.com:momoi-gh/BSW.git`；W1–W3 改动待提交 |
 | 本期范围 | 仅 Web SPA；Flutter 不做；只做响应式，无暗色/多语言 |
 | 后端项目 | `/home/momo/Projects/shcool/BS`（`bs-chat` 0.1.0） |
-| 下一步 | W1 脚手架（Vite + React 19 + Tailwind 4 + shadcn/ui） |
+| 下一步 | 你确认 W3 后进入 W4（会话列表 + 私聊对方信息解析） |
 
 ---
 
@@ -145,28 +145,55 @@ curl -s -X POST http://127.0.0.1:3100/auth/login \
 
 ---
 
-## 5. 版本矩阵
+## 5. 版本矩阵（已安装，2026-10-21）
 
-> 2026-10-21 通过 `npm view <pkg> version` 实测的最新版。W1 安装后以 `package.json` / `package-lock.json` 为准回填。
+> 以 `package.json` / `package-lock.json` 为准。
 
-| 包 | 计划版本 | 说明 |
+### 运行时依赖
+
+| 包 | 版本 | 备注 |
 | --- | --- | --- |
-| react / react-dom | 19.3.1 | ✅ 已确认（Q1） |
-| vite | 8.3.4 | Node ≥ 20.19 / 22.12 |
-| typescript | 5.9.3 | 与后端一致，不追 7.x |
-| react-router-dom | 7.18.4 | 或 `react-router` 7（库模式） |
-| @tanstack/react-query | 5.104.5 | 服务端状态 |
-| zustand | 5.0.15 | 本地状态 |
-| socket.io-client | **4.8.4** | 必须 4.8.x，对齐服务端 |
-| tailwindcss | 4.3.3 | ✅ 已确认（Q2），配 `@tailwindcss/vite` |
-| zod | 安装时锁定 | 与 react-hook-form 配合 |
-| vitest | 安装时锁定 | 后端用 5.0.5，可对齐 |
-| @testing-library/react | 安装时锁定 | 组件测试 |
-| @playwright/test | 安装时锁定 | E2E |
-| shadcn CLI | 安装时锁定 | `npx shadcn@latest init`，组件复制到 `src/components/ui/` |
-| @tailwindcss/vite | 与 tailwindcss 配套 | Tailwind 4 的 Vite 插件 |
+| react / react-dom | 19.3.1 | |
+| react-router-dom | 7.18.4 | `createBrowserRouter` |
+| @tanstack/react-query | 5.104.5 | QueryClient 已接，queryKey 在 W4/W5 落地 |
+| zustand | 5.0.15 | authStore 已用 |
+| socket.io-client | **4.8.4** | 必须 4.8.x，W6 接入 |
+| zod | 4.6.7 | 与后端一致 |
+| react-hook-form | 7.90.0 | |
+| @hookform/resolvers | **5.9.2** | 6.x 与 `effect` 可选 peer 冲突，固定 5.9.2 |
+| @base-ui/react | 1.9.0 | shadcn `base-nova` 风格底层 |
+| class-variance-authority | 0.7.1 | |
+| cn | 0.5.0 | shadcn 新版 `cn()` 来源 |
+| clsx / tailwind-merge | 2.1.1 / 3.7.0 | 备用 |
+| lucide-react | 1.60.0 | 图标（注意 major 已是 1.x） |
+| sonner | 2.0.8 | toast |
+| tw-animate-css | 1.4.0 | Tailwind 动画 |
+| @fontsource-variable/geist | 5.3.0 | shadcn 默认字体 |
 
-后端相关（只读参考）：Socket.IO 4.8.4、Fastify 5.12.7、PostgreSQL 18.6。
+### 开发依赖
+
+| 包 | 版本 | 备注 |
+| --- | --- | --- |
+| vite | 8.3.4 | |
+| @vitejs/plugin-react | 6.1.2 | |
+| typescript | **6.0.3** | Vite 8 模板默认；`baseUrl` 已废弃，用 `paths` 即可 |
+| tailwindcss | 4.3.3 | `@tailwindcss/vite` |
+| shadcn | 4.22.1 | CLI；已移入 devDependencies（避免生产 audit 告警） |
+| oxlint | 1.89.0 | Vite 8 模板默认 lint，替代 ESLint |
+| prettier | 3.9.10 | 配置对齐后端 |
+| vitest / @vitest/coverage-v8 | 5.0.5 | |
+| jsdom | 30.1.3 | |
+| @testing-library/react | 16.3.3 | |
+| @testing-library/jest-dom | 7.0.1 | |
+| @testing-library/user-event | 14.6.8 | |
+| @playwright/test | 1.64.1 | 用系统 `/usr/bin/chromium`，不下载浏览器 |
+
+### shadcn 配置
+
+- `components.json`：`style: base-nova`、`baseColor: neutral`、`css: src/index.css`、`iconLibrary: lucide`
+- **aliases 必须用相对路径**（`src/components`、`src/lib/utils`），否则 CLI 会创建字面 `./@/` 目录
+- CLI 生成的 `from "src/components/ui/..."` 需要改写为 `from "@/components/ui/..."`（Vite/TS 只认 `@/*`）
+
 
 ---
 
@@ -257,6 +284,23 @@ export function refreshOnce(): Promise<string> {
 - 不在 UI 展示 `email`。
 - 头像用首字母 + 稳定色占位（后端无上传）。
 - 错误 toast 必须可复制 `requestId`；统一用 `sonner`。
+
+### 6.9 认证实现（W2–W3，已验证）
+
+- `tokenStorage`：access 只存内存；refresh 存 `localStorage['bsw.refreshToken']`。
+- `authStore.bootstrap()`：无 refresh → `anonymous`；有则 `refreshSession()` → `GET /users/me` → `authenticated`。
+  - StrictMode 双执行用模块级 `bootstrapPromise` 单飞。
+  - 只有 401 才清 refresh token；网络错误保留，下次再试。
+- 路由：
+  - `AuthGuard`：`idle/loading` 显示 LoadingScreen；未登录跳 `/login?redirect=...`。
+  - `GuestGuard`：已登录访问 `/login` 跳回 `redirect` 或 `/chat`。
+- 登录/注册成功后写入 token + `queryClient.clear()`；表单错误显示 `code` + `requestId`。
+- `USER_EXISTS` 同时映射到 email/username 字段。
+- 登出：先调 `/auth/logout`（失败忽略），再清 token/cache；Guard 自动回登录页。
+- `refreshSession()` 单飞：并发 401 只发 1 次 refresh，成功后原请求只重放 1 次。
+- 429：默认仅 GET 按 `Retry-After` / 指数退避（1s/2s/4s，最多 3 次）；POST/DELETE 不自动重试。
+- `GET /users/me` **返回 `{ user }`**，`authApi.me()` 已解包。
+- 认证接口（login/register/refresh/logout）`skipRefresh`，不会递归刷新。
 
 ---
 
@@ -525,38 +569,54 @@ export type Peer = {
 };
 ```
 
-> 若后端实测把 `seq` 序列化成字符串，统一在 API 层 `Number()`，不改组件。
+> 实测：`seq` 在 JSON 中是 **number**（不是字符串），无需转换。
 
 ---
 
-## 10. 目录规划与命令
+## 10. 目录与命令
 
-### 10.1 目录（拟）
+### 10.1 目录（实际，W1–W3）
 
 ```text
 BSW/
 ├── src/
-│   ├── api/          client.ts / auth.ts / conversations.ts / messages.ts / users.ts
-│   ├── realtime/     socket.ts / events.ts / sync.ts / typing.ts
-│   ├── stores/       authStore.ts / conversationStore.ts / messageStore.ts
-│   │                 presenceStore.ts / typingStore.ts / uiStore.ts
-│   ├── hooks/        useConversationPeer.ts / useMessages.ts / useAutoRead.ts ...
-│   ├── pages/        Login / Register / Chat / Settings / NotFound
-│   ├── components/   layout/ conversation/ message/ composer/ member/ ui/
-│   ├── lib/          tokenStorage.ts / userDirectory.ts / time.ts / id.ts / errors.ts
-│   ├── types/        user.ts / auth.ts / conversation.ts / message.ts
+│   ├── api/
+│   │   ├── client.ts        // baseURL、Bearer、单飞刷新、401 重放、429 退避、ApiError
+│   │   ├── client.test.ts   // 8 个用例
+│   │   └── auth.ts          // login / register / me / logout / refresh
+│   ├── stores/
+│   │   └── authStore.ts     // user/status/error + bootstrap/login/register/logout
+│   ├── components/
+│   │   ├── auth/            // AuthGuard / GuestGuard / AuthError
+│   │   ├── common/          // EmptyState / LoadingScreen / PhaseBadge
+│   │   ├── layout/          // AppShell / AuthLayout
+│   │   └── ui/              // shadcn：button/input/label/dialog/sonner/tooltip...
+│   ├── pages/               // Login / Register / Chat / Settings / NotFound
+│   ├── lib/
+│   │   ├── tokenStorage.ts  // access 内存 + refresh localStorage
+│   │   ├── queryClient.ts   // retry 规则
+│   │   ├── validation.ts    // zod schema
+│   │   └── redirect.ts      // 防开放重定向
+│   ├── types/auth.ts
+│   ├── test/setup.ts
 │   ├── routes.tsx
 │   ├── App.tsx
-│   └── main.tsx
-├── tests/            unit/、e2e/
+│   ├── main.tsx
+│   └── index.css            // Tailwind + shadcn base-nova 变量
+├── tests/e2e/auth.spec.ts   // Playwright：登录/刷新恢复/登出/错误密码
+├── playwright.config.ts
+├── vitest.config.ts
+├── components.json
 ├── .env.example
+├── .env.development.local   // git 忽略
 ├── vite.config.ts
-├── tsconfig.json
+├── tsconfig*.json
 ├── package.json
-├── task.md
-├── memory.md
-└── 前端交接.md
+├── task.md / memory.md / 前端交接.md
+└── deploy/                  // W12 创建
 ```
+
+后续阶段新增：`api/conversations.ts`、`api/messages.ts`、`realtime/`、`stores/conversationStore.ts`、`stores/messageStore.ts`。
 
 约定：
 
@@ -565,21 +625,20 @@ BSW/
 - 所有 socket 监听集中在 `realtime/events.ts`，组件只订阅 store。
 - 临时方案（用户搜索、peer 解析）只能出现在 `lib/` 适配层。
 
-### 10.2 命令
-
-> W1 完成后把实际脚本与验证结果回填此表。
+### 10.2 命令（全部已验证）
 
 | 用途 | 命令 | 状态 |
 | --- | --- | --- |
-| 安装 | `npm install` | 待 W1 |
-| 开发 | `npm run dev` | 待 W1 |
-| 类型检查 | `npm run typecheck` | 待 W1 |
-| Lint | `npm run lint` | 待 W1 |
-| 格式化 | `npm run format` | 待 W1 |
-| 单测 | `npm test` | 待 W1 |
-| E2E | `npm run test:e2e` | 待 W11 |
-| 构建 | `npm run build` | 待 W1 |
-| 预览 | `npm run preview` | 待 W1 |
+| 安装 | `npm install` | ✅ |
+| 开发 | `npm run dev` → `http://localhost:5173` | ✅ 代理 `/api` + `/socket.io` 到 3100 |
+| 类型检查 | `npm run typecheck` | ✅ |
+| Lint | `npm run lint`（oxlint） | ✅ 0 warning / 0 error |
+| 格式化 | `npm run format` / `npm run format:check` | ✅ |
+| 单测 | `npm test`（Vitest） | ✅ 4 文件 / 15 用例 |
+| E2E | `npm run test:e2e`（Playwright + 系统 Chromium） | ✅ 2 用例 |
+| 构建 | `npm run build` | ✅（562 kB，W11 做 code split） |
+| 预览 | `npm run preview -- --port 4173` | ✅ SPA fallback / 404 / 守卫正常 |
+
 
 后端常用：
 
@@ -617,17 +676,33 @@ podman logs --tail=50 bs-chat-api
 | 改前端端口 | 后端 `CORS_ORIGIN` 只允许 `http://localhost:5173`，需同步改并重启 |
 | `/auth/*` 反复重试 | 10 次/分钟/IP，容易 429；登录失败要提示等待 |
 | `204` 调 `res.json()` | 抛异常；按状态码分支处理 |
+| `/users/me` 直接当 `User` 用 | 实测返回 `{ user }` 包装，必须解包 |
+| `logout` 传 access token 才生效 | 实测不带 access token、只带 body refreshToken 也返回 204 |
+| shadcn CLI 写出字面 `@/` 目录 | `components.json` 别名改用 `src/...`；生成文件的 `from "src/..."` 改回 `@/...` |
+| TS 6 使用 `baseUrl` | TS 6 报 TS5101 废弃；只保留 `paths` 即可 |
+| `@hookform/resolvers@6` 安装失败 | 与 `effect@4` 可选 peer 冲突；固定 5.9.2 |
+| 新增依赖后页面 504 `Outdated Optimize Dep` | 重启 Vite 或删 `node_modules/.vite` |
+| Vitest 误跑 Playwright 用例 | `vitest.config.ts` 设 `include: src/**`、`exclude: tests/e2e/**` |
+| `shadcn` CLI 放 dependencies | 有高危 dev 工具链依赖；移到 devDependencies 后 `npm audit --omit=dev` 为 0 |
+| Playwright 下载浏览器失败 | 用 `executablePath: /usr/bin/chromium` + `--no-sandbox` |
+| E2E 反复登录 | `/auth/*` 10 次/分钟/IP；单次运行只登录 2 次，串行执行 |
 
-### 11.2 待联调验证（不确定项）
+### 11.2 已实测结论
+
+| # | 待验证 | 结论（2026-10-21） |
+| --- | --- | --- |
+| V1 | `/auth/logout` 是否需要 access token | **不需要**：只带 `{ refreshToken }` 返回 204 |
+| V2 | `seq` 是否为 number | **是 number**（conversation / lastMessage 都是） |
+| V4 | 私聊 `/members` 内容 | 返回 2 人，均 `role=member`，含 `lastReadSeq` 与 `email`（email 不展示） |
+| V12 | `/users/me` 响应结构 | 返回 `{ user: {...} }`，前端已解包 |
+
+### 11.3 待联调验证（仍未确认）
 
 > 这些在文档中未完全明确或存在版本差异，W2–W8 期间用 `curl` / 浏览器实测后回填结论。
 
 | # | 待验证 | 影响 | 验证阶段 |
 | --- | --- | --- | --- |
-| V1 | `/auth/logout` 是否需要 access token（交接接口表写“否”，后端 task.md 写“是”） | 登出实现 | W2 |
-| V2 | `seq` 在 JSON 中确实是 number 而非 string | 排序/比较 | W2、W5 |
 | V3 | 创建会话的 200/201 状态码与 `created` 字段是否稳定 | 提示文案 | W4 |
-| V4 | 私聊 `GET /members` 是否只返回 2 人、含 `lastReadSeq` | peer 解析 | W4 |
 | V5 | 重复加已存在的群成员，后端是忽略还是报错 | 加人提示 | W9 |
 | V6 | `POST /members` 返回的成员列表是否包含新增者 | 刷新方式 | W9 |
 | V7 | `message.created` 是否也发给发送者的其他标签页 | 多端已读 | W6、W7 |
@@ -727,6 +802,9 @@ make deploy                        # 安装 Quadlet、重启、健康检查、�
 make deploy TAG=v0.1.0
 ```
 
+- 已确认远程仓库：`git@github.com:momoi-gh/BSW.git`
+- 计划镜像名：`ghcr.io/momoi-gh/bsw/web:vX`（GitHub 包名小写）
+
 - 部署脚本会校验 `bs-chat-api` 在运行、`bs_default` 存在。
 - 健康检查：`http://127.0.0.1:3200/healthz` + `http://127.0.0.1:3200/api/readyz`。
 - 失败：回滚 `localhost/bs-web:previous` 并打印 `podman logs bs-web`。
@@ -771,6 +849,12 @@ systemctl --user status bs-web
 | D13 | web 容器基座用 nginx-unprivileged（:8080） | 拟定 | rootless、非 root、官方入口脚本支持模板 |
 | D14 | 宿主 Caddy 从 3100 改指向 3200 | 拟定 | 单域名同源；TLS 仍在宿主机 |
 | D15 | 部署失败保留 `:previous` 镜像并自动回滚 | 拟定 | 与后端 deploy.sh 的行为一致 |
+| D16 | TypeScript 6.0.3 + oxlint（Vite 8 模板默认） | **已采用** | 模板原生组合；typecheck 兜底类型 |
+| D17 | shadcn `base-nova` + 相对 aliases | **已采用** | 规避 CLI 写出字面 `@/` 目录 |
+| D18 | access 仅内存、refresh `localStorage` | **已实现** | 后端无 Cookie 模式 |
+| D19 | `/users/me` 在 API 层解包 `{ user }` | **已实现** | 实测后端结构与交接类型不一致 |
+| D20 | bootstrap 单飞 + Guard 驱动跳转 | **已实现** | StrictMode 双执行、刷新恢复不闪屏 |
+| D21 | Playwright 用系统 Chromium（不下载浏览器） | **已采用** | 环境已有 `/usr/bin/chromium` |
 
 ---
 
@@ -781,3 +865,4 @@ systemctl --user status bs-web
 | 2026-10-21 | 初版：记录环境实测（3100 可用、3000 未启动）、种子 UUID、版本矩阵、REST/WS 速查、约定、待验证项与决策 |
 | 2026-10-21 | 确认 Q1/Q2：React 19 + Tailwind 4 + shadcn/ui；补充 shadcn 初始化、组件清单与 UI 约定 |
 | 2026-10-21 | 确认 Q3/Q6/Q7/Q8：联调 3100；W3/W6/W8 确认门；只做响应式；新增 §13 容器化部署方案（nginx + Quadlet + Caddy + 一键部署/回滚） |
+| 2026-10-21 | W1–W3 完成：Vite 8/React 19/Tailwind 4/shadcn 骨架；认证与守卫；API 客户端（单飞刷新、401 重放、429 退避）；15 单测 + 2 Playwright 用例通过；停在 W3 确认门 |

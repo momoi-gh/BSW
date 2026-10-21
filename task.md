@@ -2,7 +2,7 @@
 
 > 项目目录：`/home/momo/Projects/shcool/BSW`
 > 更新时间：2026-10-21
-> 当前状态：**W0 已完成：React 19 + Tailwind 4 + shadcn/ui；联调 3100；最终 Podman 容器一键部署；W3/W6/W8 为确认门**
+> 当前状态：**W1–W3 已完成，停在 W3 确认门；等你验收后进入 W4**
 > 输入文档：`前端交接.md`（对应后端 `bs-chat` 0.1.0）
 > 范围：**仅 Web 单页应用（SPA）**；Flutter / 移动端本期不做
 > 配套记忆：`memory.md`（环境、约定、接口速查、踩坑）
@@ -71,17 +71,18 @@
 | 层 | 拟采用 | 版本（实测） | 备选 | 状态 |
 | --- | --- | --- | --- | --- |
 | 构建 | Vite | 8.3.4 | — | 已确认 |
-| 语言 | TypeScript | 5.9.3（与后端一致） | — | 已确认 |
+| 语言 | TypeScript | 6.0.3（Vite 8 模板默认） | — | 已确认 |
 | 框架 | React | 19.3.1 | — | **✅ 已确认（Q1）** |
 | 路由 | react-router | 7.18.4 | — | 已确认 |
 | 服务端状态 | TanStack Query | 5.104.5 | 纯自研 store | 已确认 |
 | 本地状态 | Zustand | 5.0.15 | Context + reducer | 已确认 |
-| 表单/校验 | react-hook-form + zod | 安装时锁定 | 受控表单 + 手写校验 | 已确认 |
+| 表单/校验 | react-hook-form + zod | 7.90.0 / 4.6.7 | 受控表单 + 手写校验 | 已确认 |
 | 样式 | Tailwind CSS 4 | 4.3.3 | — | **✅ 已确认（Q2）** |
-| 组件 | shadcn/ui（按需拷贝） | 安装时锁定 | — | **✅ 已确认（Q2）** |
+| 组件 | shadcn/ui（按需拷贝） | CLI 4.22.1（base-nova） | — | **✅ 已确认（Q2）** |
 | 实时 | socket.io-client | 4.8.4（必须 4.8.x） | — | 已确定 |
-| 测试 | Vitest + Testing Library | 安装时锁定 | — | 已确认 |
-| E2E | Playwright | 安装时锁定 | 手动验收 | 已确认 |
+| 测试 | Vitest + Testing Library | 5.0.5 / 16.3.3 | — | 已确认 |
+| E2E | Playwright | 1.64.1（系统 Chromium） | 手动验收 | 已确认 |
+| Lint/格式 | oxlint + Prettier | 1.89.0 / 3.9.10 | — | 已确认 |
 | 包管理 | npm | 11.19.0 | pnpm 12.14.0 | 已确认 |
 | 部署 | Podman + nginx-unprivileged + Quadlet | Podman 6.1.2 / nginx-unprivileged alpine | 静态托管 | **✅ 已确认** |
 | 镜像仓库 | GHCR（复用后端模式） | — | 本地镜像 | 待 Q4（需 git 远程） |
@@ -191,24 +192,24 @@ bs-chat-api 容器（Quadlet，网络 bs_default，内部 :3000）
 
 ### W1 — 工程骨架、路由、样式、代理（0.5d）
 
-- [ ] `npm create vite@latest . -- --template react-ts`（若选 Vue 则换模板）
-- [ ] 安装并锁定依赖，回填 `memory.md` 版本矩阵
-- [ ] 配置 `@/` → `src/` 别名（`tsconfig` + `vite.config.ts` + Vitest）
-- [ ] Tailwind CSS 4 接入（`@tailwindcss/vite` 插件 + 全局样式）
-- [ ] shadcn/ui 初始化：`npx shadcn@latest init`，生成 `components.json` 与 `src/lib/utils.ts`（`cn()`）
-- [ ] 按需添加首批组件（复制到 `src/components/ui/`，可改）：
+- [x] `npm create vite@latest . -- --template react-ts`（若选 Vue 则换模板）
+- [x] 安装并锁定依赖，回填 `memory.md` 版本矩阵
+- [x] 配置 `@/` → `src/` 别名（`tsconfig` + `vite.config.ts` + Vitest）
+- [x] Tailwind CSS 4 接入（`@tailwindcss/vite` 插件 + 全局样式）
+- [x] shadcn/ui 初始化：`npx shadcn@latest init`，生成 `components.json` 与 `src/lib/utils.ts`（`cn()`）
+- [x] 按需添加首批组件（复制到 `src/components/ui/`，可改）：
   `button`、`input`、`textarea`、`dialog`、`dropdown-menu`、`avatar`、`badge`、`tabs`、`skeleton`、`tooltip`、`separator`、`scroll-area`、`sheet`（移动端抽屉）、`sonner`（toast）
-- [ ] ESLint + Prettier（参考后端 `/home/momo/Projects/shcool/BS/.prettierrc.json` 风格）
-- [ ] `npm scripts`：`dev` / `build` / `preview` / `typecheck` / `lint` / `format` / `test` / `test:e2e`
-- [ ] 环境变量：`.env.example`、`.env.development.local`（不提交），见 §3.1
-- [ ] Vite 代理：`/api` 重写到后端、`/socket.io` 开启 `ws: true`
-- [ ] 路由骨架：
+- [x] oxlint + Prettier（Vite 8 模板默认 oxlint；Prettier 配置对齐后端）
+- [x] `npm scripts`：`dev` / `build` / `preview` / `typecheck` / `lint` / `format` / `test` / `test:e2e`
+- [x] 环境变量：`.env.example`、`.env.development.local`（不提交），见 §3.1
+- [x] Vite 代理：`/api` 重写到后端、`/socket.io` 开启 `ws: true`
+- [x] 路由骨架：
   - `/login`、`/register`（无外壳）
   - `/chat`（应用外壳）、`/chat/:conversationId`
   - `/settings`
   - `*` → 404
-- [ ] 页面占位 + 全局布局（侧栏 + 主区域）、加载/空状态基础组件
-- [ ] `AuthGuard` / `GuestGuard` 占位（W2 接真实状态）
+- [x] 页面占位 + 全局布局（侧栏 + 主区域）、加载/空状态基础组件
+- [x] `AuthGuard` / `GuestGuard` 占位（W2 接真实状态）
 
 **验收**
 - `npm run dev` 打开 `http://localhost:5173` 正常
@@ -219,21 +220,22 @@ bs-chat-api 容器（Quadlet，网络 bs_default，内部 :3000）
 
 ### W2 — 认证：登录 / 注册 / 登出 / 恢复会话（1d）
 
-- [ ] `src/types/auth.ts`：`User`、`AuthResponse`（严格按交接 §2.1 / §6.1）
-- [ ] `src/api/auth.ts`：`register`、`login`、`refresh`、`logout`、`me`
-- [ ] `src/lib/tokenStorage.ts`
+- [x] `src/types/auth.ts`：`User`、`AuthResponse`（严格按交接 §2.1 / §6.1）
+- [x] `src/api/auth.ts`：`register`、`login`、`refresh`、`logout`、`me`
+- [x] `src/lib/tokenStorage.ts`
   - access token：**仅内存**
   - refresh token：`localStorage`（key 加前缀，如 `bsw.refreshToken`）
   - 提供 `get/set/clear`，禁止在日志里打印 token
-- [ ] `authStore`：`{ user, accessToken, status: 'idle'|'loading'|'authenticated'|'anonymous' }`
+- [x] `authStore`：`{ user, accessToken, status: 'idle'|'loading'|'authenticated'|'anonymous' }`
   - 启动时：有 refresh token → 单飞 refresh → `GET /users/me` → 进入 `authenticated`
   - 无 refresh token → `anonymous`
-- [ ] 登录页：email + password、zod 校验、提交 loading、错误提示（`INVALID_CREDENTIALS` / 429 / 网络错误）
-- [ ] 注册页：email、username（3–32 位字母/数字/下划线）、password（8–128）、displayName 可选；`USER_EXISTS` 定位到字段
-- [ ] 登录/注册成功后跳转：有 `redirect` 参数回原地址，否则 `/chat`
-- [ ] 登出：`POST /auth/logout`（失败也继续本地清理）→ 清 token、清缓存、断开 socket、跳 `/login`
-- [ ] 路由守卫接真实状态；`status === 'idle'` 时显示启动加载页
-- [ ] 认证接口 **不做** 401 自动刷新（交接 §2.7.4）
+- [x] 登录页：email + password、zod 校验、提交 loading、错误提示（`INVALID_CREDENTIALS` / 429 / 网络错误）
+- [x] 注册页：email、username（3–32 位字母/数字/下划线）、password（8–128）、displayName 可选；`USER_EXISTS` 定位到字段
+- [x] 登录/注册成功后跳转：有 `redirect` 参数回原地址，否则 `/chat`
+- [x] 登出：`POST /auth/logout`（失败也继续本地清理）→ 清 token、清缓存、跳 `/login`
+- [ ] 登出/换账号时断开 socket（W6 随 socket 生命周期接入）
+- [x] 路由守卫接真实状态；`status === 'idle'` 时显示启动加载页
+- [x] 认证接口 **不做** 401 自动刷新（交接 §2.7.4）
 
 **验收**
 - 用种子账号登录成功，`/users/me` 返回一致
@@ -245,14 +247,14 @@ bs-chat-api 容器（Quadlet，网络 bs_default，内部 :3000）
 
 ### W3 — API 客户端、单飞刷新、错误归一（1d）
 
-- [ ] `src/api/client.ts`
+- [x] `src/api/client.ts`
   - `baseURL = import.meta.env.VITE_API_BASE_URL`
   - 统一 JSON、`Authorization: Bearer`
   - 超时（默认 15s）+ `AbortController`
   - 解析 `{ error: { code, message, requestId } }` → `ApiError`
   - 无 body 的 204 正确处理
-- [ ] `ApiError`：`{ status, code, message, requestId }` + `isApiError()` 类型守卫
-- [ ] **单飞刷新**（交接 §2.5）
+- [x] `ApiError`：`{ status, code, message, requestId }` + `isApiError()` 类型守卫
+- [x] **单飞刷新**（交接 §2.5）
   ```ts
   let refreshing: Promise<string> | null = null;
   function refreshOnce(): Promise<string> { ... }
@@ -260,23 +262,24 @@ bs-chat-api 容器（Quadlet，网络 bs_default，内部 :3000）
   - 401 → 刷新 → **只重放一次**原请求
   - `/auth/login`、`/auth/register`、`/auth/refresh` 排除自动刷新
   - 刷新失败：清空登录态 → 跳登录页，返回 `ApiError`
-- [ ] 429 处理：仅对幂等 GET 做指数退避（1s / 2s / 4s，最多 3 次）；写操作直接提示，避免重复发送
-- [ ] 5xx：不直接展示后端 message，统一“服务器内部错误”，附 `requestId`
-- [ ] TanStack Query 接入（若采用）
+- [x] 429 处理：仅对幂等 GET 做指数退避（1s / 2s / 4s，最多 3 次）；写操作直接提示，避免重复发送
+- [x] 5xx：不直接展示后端 message，统一“服务器内部错误”，附 `requestId`
+- [x] TanStack Query 接入（若采用）
   - 全局 `retry`：4xx 不重试；401 交给 client；429/5xx 最多 1 次
-  - `queryKey` 规范：`['conversations']`、`['members', id]`、`['messages', id]`
-- [ ] 单测（mock `fetch`）：
+  - [ ] `queryKey` 规范：`['conversations']`、`['members', id]`、`['messages', id]`（W4/W5 落地）
+- [x] 单测（mock `fetch`）：
   - 3 个并发请求同时 401 → 只调用 1 次 `/auth/refresh`
   - 刷新成功 → 原请求带新 token 重放；只重放一次
   - 刷新失败 → 登录态清空、抛错、不无限循环
   - 错误体解析出 `requestId`
 
 **验收**
-- 单测全绿
-- 手动把内存 accessToken 改为已过期 token（或等待 15 分钟）后操作，仍成功且后端日志只有 1 次 refresh
-- 触发 429 时有提示且不会风暴重试
+- 单测全绿（15 个：单飞刷新、刷新失败、429 退避、204、requestId、tokenStorage、redirect）
+- E2E：登录 → 刷新页面 → refresh 轮换 + `/users/me` 恢复 → 登出清理（真实 3100）
+- 并发 401 只触发 1 次 refresh（单测 3 并发）
+- 429 时 GET 退避、写操作直接失败，不会风暴重试
 
-> ⛳ **确认门 W3**：完成后暂停，演示「并发 401 只刷新一次 + 刷新失败回登录页」，确认后再进入 W4。
+> ⛳ **确认门 W3（已到达 2026-10-21）**：已完成并通过 15 个单测 + 2 个 Playwright 用例；请验收「登录 → 刷新页面恢复 → 登出」「并发 401 只刷新一次」，确认后再进入 W4。
 
 ---
 
@@ -574,7 +577,7 @@ bs-chat-api 容器（Quadlet，网络 bs_default，内部 :3000）
   - 3100 仍保留给宿主机直连调试，不对外
 - [ ] `Makefile`：`image` / `up` / `down` / `logs` / `deploy TAG=...` / `rollback`
 - [ ] `.dockerignore`：`node_modules`、`dist`、`.git`、`tests`、`coverage`、`*.md`（保留必要文件）
-- [ ] `.github/workflows/publish.yml`：推送 tag → 构建并推送 `ghcr.io/<owner>/bs-web:vX`（依赖 Q4 远程仓库）
+- [ ] `.github/workflows/publish.yml`：推送 tag → 构建并推送 `ghcr.io/momoi-gh/bsw/web:vX`（远程仓库 `momoi-gh/BSW` 已存在）
 - [ ] README 部署章节：服务器准备、镜像源、`make deploy`、回滚、TLS、常见故障
 - [ ] 验证：`curl /healthz`、`curl /api/healthz`、登录、历史、WS 实时、深链接刷新
 - [ ] 验证：重启容器 / 重启机器（`loginctl enable-linger`）后自动恢复
@@ -650,8 +653,8 @@ GET /users/search?q=ali&limit=20
 
 > 对应 `前端交接.md` §12，已剔除 Flutter 相关项。
 
-- [ ] 注册、登录、登出、刷新令牌正常
-- [ ] 401 只触发一次刷新，刷新失败回登录页
+- [x] 注册、登录、登出、刷新令牌正常
+- [x] 401 只触发一次刷新，刷新失败回登录页
 - [ ] 会话列表显示未读数、最后一条消息
 - [ ] 私聊不会重复创建
 - [ ] 群聊创建、加人、移除、退群正常
@@ -663,8 +666,8 @@ GET /users/search?q=ali&limit=20
 - [ ] 在线状态能随事件更新（首屏允许“未知”）
 - [ ] 断网重连后 `sync.request` 能补消息
 - [ ] 429 有限流提示和退避
-- [ ] Web 端 CORS / 代理配置正确
-- [ ] 错误提示带 `requestId` 便于排查
+- [x] Web 端 CORS / 代理配置正确
+- [x] 错误提示带 `requestId` 便于排查
 - [ ] 移动端窄屏可用（列表/聊天切换）
 - [ ] `typecheck` / `lint` / `test` / `build` 全绿
 - [ ] Podman 镜像可构建，容器以非 root 运行
@@ -674,14 +677,14 @@ GET /users/search?q=ali&limit=20
 
 ---
 
-## 9. 待确认问题（阻塞 W0 出口）
+## 9. 问题与决策记录（W0 已完成）
 
 | # | 问题 | 推荐默认值 | 影响 |
 | --- | --- | --- | --- |
 | Q1 | 前端框架用 React 19 还是 Vue 3？ | **✅ 已确认：React 19** | 全部代码与目录结构 |
 | Q2 | UI 方案：Tailwind 4 + shadcn/ui / Ant Design / 极简自定义？ | **✅ 已确认：Tailwind 4 + shadcn/ui 按需引入** | 组件写法、体积、主题 |
 | Q3 | 联调目标：3100 还是新起 3000？是否允许在 3100 写测试消息？ | **✅ 已确认：直接用 3100**，只用种子账号写测试数据 | 数据安全、CORS、验收 |
-| Q4 | 是否 `git init` 并建立远程仓库？提交粒度？ | **默认 `git init` + 每阶段一次提交**；GHCR 发布需要你提供远程仓库 | 回滚、CI 与镜像发布 |
+| Q4 | 是否 `git init` 并建立远程仓库？提交粒度？ | **远程仓库已存在 `momoi-gh/BSW`**；本地 `main`，每阶段一次提交 | 回滚、CI 与镜像发布 |
 | Q5 | 用户搜索缺口：先用 UUID 临时方案，还是等后端补 `/users/search`？ | **默认先用临时方案**（不阻塞主链路） | W4/W10 工作量 |
 | Q6 | 交付节奏：每阶段停下验收，还是一次做到 MVP？ | **✅ 已确认：W3 / W6 / W8 停下确认** | 返工成本 |
 | Q7 | 是否需要暗色模式 / 多语言？ | **✅ 已确认：只做响应式；暗色、多语言不做** | 样式与工期 |
@@ -696,3 +699,4 @@ GET /users/search?q=ali&limit=20
 | 2026-10-21 | 初版：基于 `前端交接.md` 拆解 Web 阶段 W0–W12，明确不做 Flutter；记录环境基线、缺口临时方案与待确认问题 |
 | 2026-10-21 | 确认 Q1/Q2：React 19 + Tailwind CSS 4 + shadcn/ui；补充 W1 的 shadcn 初始化与首批组件清单 |
 | 2026-10-21 | 确认 Q3/Q6/Q7/Q8：联调 3100、W3/W6/W8 确认门、只做响应式、Podman 容器一键部署；W12 从可选改为必做并补充部署拓扑与脚本清单 |
+| 2026-10-21 | W1–W3 完成：Vite 8 + React 19 + Tailwind 4 + shadcn/ui；认证、守卫、API 客户端（单飞刷新/401 重放/429 退避）；15 单测 + 2 E2E 通过；到达 W3 确认门 |

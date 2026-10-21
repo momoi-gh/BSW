@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+package-lock.json
+task.md
+memory.md
+前端交接.md
