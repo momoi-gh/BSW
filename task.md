@@ -181,10 +181,10 @@ bs-chat-api 容器（Quadlet，网络 bs_default，内部 :3000）
 - [x] Q6 确认门：W3 / W6 / W8 完成后暂停验收
 - [x] Q7 只做响应式；不做暗色模式、多语言
 - [x] 最终交付：**Podman 容器镜像 + 一键部署 + Quadlet 常驻**
-- [ ] Q4 git：W1 执行 `git init`；GHCR 自动发布需要远程仓库（待你提供）
+- [x] Q4 git：远程仓库 `momoi-gh/BSW` 已存在；每阶段一次提交（W1–W3 已提交 `8bdadd4`）
 - [ ] Q5 用户搜索：默认先用手动 UUID 临时方案，等后端补 `/users/search`（不阻塞）
-- [ ] 验证后端：`curl -s http://127.0.0.1:3100/readyz`、登录 alice 成功
-- [ ] 记录基线到 `memory.md`（Node、npm、后端、端口、CORS、种子账号）
+- [x] 验证后端：`curl -s http://127.0.0.1:3100/readyz`、登录 alice 成功
+- [x] 记录基线到 `memory.md`（Node、npm、后端、端口、CORS、种子账号）
 
 **出口**：决策已确认；后端可用；W1 可开工。
 
